@@ -1,0 +1,1655 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Understanding Lamotrigine</title>
+  <!-- Chart.js for interactive charts -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <!-- FontAwesome for icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <style>
+    :root {
+      --primary: #3a86ff;
+      --secondary: #8338ec;
+      --accent: #ff006e;
+      --light: #ffffff;
+      --dark: #14213d;
+      --mid: #4a5568;
+      --bg: #f8f9fa;
+      --success: #06d6a0;
+      --warning: #ffd166;
+      --danger: #ef476f;
+    }
+    
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      transition: all 0.3s ease;
+    }
+    
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      line-height: 1.6;
+      color: var(--dark);
+      background-color: var(--bg);
+      overflow-x: hidden;
+    }
+    
+    .app-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 20px;
+    }
+    
+    .header {
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      color: white;
+      padding: 2rem 0;
+      text-align: center;
+      border-radius: 0 0 30px 30px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+      margin-bottom: 2rem;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .header::before {
+      content: "";
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: repeating-linear-gradient(
+        45deg,
+        rgba(255, 255, 255, 0.1),
+        rgba(255, 255, 255, 0.1) 10px,
+        transparent 10px,
+        transparent 20px
+      );
+      animation: headerAnimation 60s linear infinite;
+      z-index: 0;
+    }
+    
+    @keyframes headerAnimation {
+      0% {
+        transform: rotate(0deg);
+      }
+      100% {
+        transform: rotate(360deg);
+      }
+    }
+    
+    .header-content {
+      position: relative;
+      z-index: 1;
+    }
+    
+    .header h1 {
+      font-size: 3rem;
+      margin-bottom: 1rem;
+      letter-spacing: 1px;
+    }
+    
+    .molecular-formula {
+      background-color: rgba(255, 255, 255, 0.2);
+      padding: 0.5rem 1rem;
+      border-radius: 50px;
+      display: inline-block;
+      font-family: monospace;
+      font-weight: bold;
+      letter-spacing: 1px;
+      margin-top: 0.5rem;
+    }
+    
+    .nav-tabs {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 2rem;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+    
+    .nav-tab {
+      padding: 12px 24px;
+      background-color: white;
+      border-radius: 50px;
+      cursor: pointer;
+      font-weight: 600;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    
+    .nav-tab.active {
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      color: white;
+      box-shadow: 0 4px 15px rgba(58, 134, 255, 0.3);
+    }
+    
+    .nav-tab:hover:not(.active) {
+      transform: translateY(-3px);
+      box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+    }
+    
+    .nav-tab i {
+      font-size: 1.2rem;
+    }
+    
+    .tab-content {
+      background-color: white;
+      border-radius: 20px;
+      padding: 2rem;
+      margin-bottom: 2rem;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+      min-height: 400px;
+    }
+    
+    .tab-pane {
+      display: none;
+    }
+    
+    .tab-pane.active {
+      display: block;
+    }
+    
+    .section-title {
+      font-size: 1.8rem;
+      margin-bottom: 1.5rem;
+      color: var(--primary);
+      border-bottom: 2px solid var(--secondary);
+      padding-bottom: 0.5rem;
+      display: inline-block;
+    }
+    
+    .section-subtitle {
+      font-size: 1.4rem;
+      margin: 1.5rem 0 1rem;
+      color: var(--secondary);
+    }
+    
+    .info-card {
+      background-color: var(--bg);
+      border-radius: 15px;
+      padding: 1.5rem;
+      margin-bottom: 1.5rem;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    
+    .info-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+    }
+    
+    .info-card h3 {
+      margin-bottom: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    
+    .info-card h3 i {
+      color: var(--accent);
+    }
+    
+    .interactive-molecule {
+      background-color: var(--dark);
+      border-radius: 15px;
+      padding: 2rem;
+      margin: 2rem 0;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+      color: white;
+    }
+    
+    .molecule-backdrop {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: repeating-linear-gradient(
+        45deg,
+        rgba(255, 255, 255, 0.03),
+        rgba(255, 255, 255, 0.03) 10px,
+        transparent 10px,
+        transparent 20px
+      );
+      z-index: 0;
+    }
+    
+    .molecule-content {
+      position: relative;
+      z-index: 1;
+    }
+    
+    .molecule-structure {
+      max-width: 300px;
+      margin: 0 auto;
+      display: block;
+      transform-style: preserve-3d;
+      animation: rotate 30s infinite linear;
+    }
+    
+    @keyframes rotate {
+      from { transform: rotateY(0deg); }
+      to { transform: rotateY(360deg); }
+    }
+    
+    .interactive-chart {
+      margin: 2rem 0;
+      border-radius: 15px;
+      padding: 1.5rem;
+      background-color: white;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+    }
+    
+    .chart-title {
+      font-size: 1.4rem;
+      margin-bottom: 1rem;
+      text-align: center;
+      color: var(--secondary);
+    }
+    
+    .accordion {
+      margin: 1.5rem 0;
+    }
+    
+    .accordion-item {
+      margin-bottom: 1rem;
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+    }
+    
+    .accordion-header {
+      padding: 1rem 1.5rem;
+      background-color: var(--bg);
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-weight: 600;
+    }
+    
+    .accordion-header:hover {
+      background-color: #edf2f7;
+    }
+    
+    .accordion-content {
+      padding: 0;
+      max-height: 0;
+      overflow: hidden;
+      background-color: white;
+      transition: max-height 0.3s ease, padding 0.3s ease;
+    }
+    
+    .accordion-content.open {
+      padding: 1.5rem;
+      max-height: 1000px;
+    }
+    
+    .body-interactive {
+      display: flex;
+      justify-content: center;
+      margin: 2rem 0;
+      position: relative;
+    }
+    
+    .body-svg {
+      max-width: 300px;
+      height: auto;
+    }
+    
+    .body-part {
+      cursor: pointer;
+      transition: fill 0.3s ease;
+    }
+    
+    .body-part:hover {
+      fill: var(--accent) !important;
+    }
+    
+    .tooltip {
+      position: absolute;
+      background-color: var(--dark);
+      color: white;
+      padding: 0.75rem 1rem;
+      border-radius: 8px;
+      max-width: 250px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+      z-index: 10;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.3s ease, visibility 0.3s ease;
+    }
+    
+    .tooltip.visible {
+      opacity: 1;
+      visibility: visible;
+    }
+    
+    .quiz-container {
+      background-color: var(--bg);
+      border-radius: 15px;
+      padding: 2rem;
+      margin: 2rem 0;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+    }
+    
+    .quiz-title {
+      text-align: center;
+      margin-bottom: 2rem;
+      color: var(--primary);
+    }
+    
+    .quiz-question {
+      font-size: 1.2rem;
+      margin-bottom: 1.5rem;
+      font-weight: 600;
+    }
+    
+    .quiz-options {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+    }
+    
+    @media (max-width: 600px) {
+      .quiz-options {
+        grid-template-columns: 1fr;
+      }
+    }
+    
+    .quiz-option {
+      padding: 1rem;
+      background-color: white;
+      border-radius: 10px;
+      cursor: pointer;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+      transition: all 0.3s ease;
+    }
+    
+    .quiz-option:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    }
+    
+    .quiz-option.selected {
+      background-color: var(--primary);
+      color: white;
+    }
+    
+    .quiz-option.correct {
+      background-color: var(--success);
+      color: white;
+    }
+    
+    .quiz-option.incorrect {
+      background-color: var(--danger);
+      color: white;
+    }
+    
+    .quiz-result {
+      margin-top: 2rem;
+      text-align: center;
+      font-weight: 600;
+      font-size: 1.2rem;
+      display: none;
+    }
+    
+    .dosage-calculator {
+      background-color: var(--bg);
+      border-radius: 15px;
+      padding: 2rem;
+      margin: 2rem 0;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+    }
+    
+    .calculator-title {
+      text-align: center;
+      margin-bottom: 1.5rem;
+      color: var(--primary);
+    }
+    
+    .calculator-form {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.5rem;
+    }
+    
+    @media (max-width: 768px) {
+      .calculator-form {
+        grid-template-columns: 1fr;
+      }
+    }
+    
+    .form-group {
+      margin-bottom: 1rem;
+    }
+    
+    .form-group label {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-weight: 600;
+    }
+    
+    .form-group input, .form-group select {
+      width: 100%;
+      padding: 0.75rem;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      font-size: 1rem;
+    }
+    
+    .form-group input:focus, .form-group select:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(58, 134, 255, 0.3);
+    }
+    
+    .calculator-result {
+      margin-top: 1.5rem;
+      padding: 1.5rem;
+      background-color: white;
+      border-radius: 10px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+      text-align: center;
+      display: none;
+    }
+    
+    .timeline {
+      position: relative;
+      margin: 2rem 0;
+      padding-left: 3rem;
+    }
+    
+    .timeline::before {
+      content: "";
+      position: absolute;
+      height: 100%;
+      width: 4px;
+      background: linear-gradient(to bottom, var(--primary), var(--secondary));
+      left: 10px;
+      top: 0;
+      border-radius: 4px;
+    }
+    
+    .timeline-item {
+      position: relative;
+      margin-bottom: 2rem;
+    }
+    
+    .timeline-item::before {
+      content: "";
+      position: absolute;
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background-color: var(--accent);
+      left: -2.25rem;
+      top: 0;
+      border: 4px solid white;
+      box-shadow: 0 0 0 3px var(--accent);
+    }
+    
+    .timeline-date {
+      font-weight: bold;
+      margin-bottom: 0.5rem;
+      color: var(--secondary);
+    }
+    
+    .footer {
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      color: white;
+      padding: 2rem 0;
+      text-align: center;
+      margin-top: 3rem;
+      border-radius: 30px 30px 0 0;
+    }
+    
+    .disclaimer {
+      max-width: 800px;
+      margin: 0 auto;
+      font-size: 0.9rem;
+      opacity: 0.8;
+      margin-top: 1rem;
+    }
+    
+    .side-effect-list {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+      gap: 1rem;
+      margin: 1.5rem 0;
+    }
+    
+    .side-effect-item {
+      background-color: white;
+      border-radius: 10px;
+      padding: 1rem;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    
+    .severity-indicator {
+      width: 15px;
+      height: 15px;
+      border-radius: 50%;
+    }
+    
+    .severity-low {
+      background-color: var(--success);
+    }
+    
+    .severity-medium {
+      background-color: var(--warning);
+    }
+    
+    .severity-high {
+      background-color: var(--danger);
+    }
+    
+    .table-container {
+      overflow-x: auto;
+      margin: 1.5rem 0;
+    }
+    
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    
+    th, td {
+      padding: 1rem;
+      text-align: left;
+      border-bottom: 1px solid #e2e8f0;
+    }
+    
+    th {
+      background-color: var(--bg);
+      font-weight: 600;
+      color: var(--primary);
+    }
+    
+    tr:hover {
+      background-color: #f8f9fa;
+    }
+    
+    .references {
+      margin-top: 2rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid #e2e8f0;
+      font-size: 0.9rem;
+    }
+    
+    .references ol {
+      padding-left: 1.5rem;
+    }
+    
+    .references li {
+      margin-bottom: 0.5rem;
+    }
+    
+    @media (max-width: 768px) {
+      .header h1 {
+        font-size: 2rem;
+      }
+      
+      .nav-tab {
+        padding: 8px 16px;
+        font-size: 0.9rem;
+      }
+    }
+
+    .btn-primary {
+      display: block;
+      margin: 1.5rem auto;
+      padding: 0.75rem 1.5rem;
+      background-color: var(--primary);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 600;
+      box-shadow: 0 4px 15px rgba(58, 134, 255, 0.3);
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(58, 134, 255, 0.4);
+    }
+  </style>
+</head>
+<body>
+  <div class="app-container">
+    <header class="header">
+      <div class="header-content">
+        <h1>Understanding Lamotrigine</h1>
+        <div class="molecular-formula">C₉H₇Cl₂N₅</div>
+      </div>
+    </header>
+    
+    <nav class="nav-tabs">
+      <div class="nav-tab active" data-tab="overview">
+        <i class="fas fa-info-circle"></i> Overview
+      </div>
+      <div class="nav-tab" data-tab="mechanism">
+        <i class="fas fa-brain"></i> Mechanism
+      </div>
+      <div class="nav-tab" data-tab="uses">
+        <i class="fas fa-heartbeat"></i> Clinical Uses
+      </div>
+      <div class="nav-tab" data-tab="dosing">
+        <i class="fas fa-prescription"></i> Dosing
+      </div>
+      <div class="nav-tab" data-tab="sideEffects">
+        <i class="fas fa-exclamation-triangle"></i> Side Effects
+      </div>
+      <div class="nav-tab" data-tab="interactions">
+        <i class="fas fa-pills"></i> Interactions
+      </div>
+    </nav>
+    
+    <div class="tab-content">
+      <div id="overview" class="tab-pane active">
+        <h2 class="section-title">Lamotrigine Overview</h2>
+        <div class="info-card">
+          <h3><i class="fas fa-flask"></i> Chemical Properties</h3>
+          <p>Lamotrigine (3,5-diamino-6-(2,3-dichlorophenyl)-1,2,4-triazine) is an anticonvulsant drug belonging to the phenyltriazine class. It has a molecular weight of 256.09 g/mol and appears as a white to pale cream-colored powder that is slightly soluble in water.</p>
+        </div>
+        
+        <div class="interactive-molecule">
+          <div class="molecule-backdrop"></div>
+          <div class="molecule-content">
+            <h3>3D Molecular Structure</h3>
+            <p>Hover to interact with the 3D model</p>
+            <img 
+              src="https://pubchem.ncbi.nlm.nih.gov/image/imgsrv.fcgi?cid=3878&t=l" 
+              alt="Lamotrigine molecular structure" 
+              class="molecule-structure" 
+            />
+          </div>
+        </div>
+        
+        <div class="info-card">
+          <h3><i class="fas fa-history"></i> History and Development</h3>
+          <p>Lamotrigine was first synthesized in the 1970s, patented in 1980, and approved for medical use in 1990. It was initially developed as an antifolate drug due to its structural similarity to dihydrofolate reductase inhibitors, but was found to have anticonvulsant properties and became widely used in the treatment of epilepsy.</p>
+        </div>
+        
+        <div class="timeline">
+          <div class="timeline-item">
+            <div class="timeline-date">1980</div>
+            <div class="timeline-content">Lamotrigine patented by Wellcome Foundation</div>
+          </div>
+          <div class="timeline-item">
+            <div class="timeline-date">1990</div>
+            <div class="timeline-content">First approved for use in the UK for treatment of partial seizures</div>
+          </div>
+          <div class="timeline-item">
+            <div class="timeline-date">1994</div>
+            <div class="timeline-content">FDA approval in the United States as an adjunctive treatment for partial seizures</div>
+          </div>
+          <div class="timeline-item">
+            <div class="timeline-date">2003</div>
+            <div class="timeline-content">FDA approval for maintenance treatment of bipolar I disorder</div>
+          </div>
+          <div class="timeline-item">
+            <div class="timeline-date">2005</div>
+            <div class="timeline-content">Generic versions become available</div>
+          </div>
+        </div>
+        
+        <div class="quiz-container">
+          <h3 class="quiz-title">Test Your Knowledge</h3>
+          <div class="quiz-question">
+            What is the chemical class of lamotrigine?
+          </div>
+          <div class="quiz-options">
+            <div class="quiz-option" data-answer="a">
+              Benzodiazepine
+            </div>
+            <div class="quiz-option" data-answer="b">
+              Phenyltriazine
+            </div>
+            <div class="quiz-option" data-answer="c">
+              Dibenzazepine
+            </div>
+            <div class="quiz-option" data-answer="d">
+              Iminostilbene
+            </div>
+          </div>
+          
+          <button id="overview-quiz-check" class="btn-primary">
+            Check Answer
+          </button>
+          
+          <div id="overview-quiz-result" class="quiz-result"></div>
+        </div>
+      </div>
+      
+      <div id="mechanism" class="tab-pane">
+        <h2 class="section-title">Mechanism of Action</h2>
+        <div class="info-card">
+          <h3><i class="fas fa-bolt"></i> Primary Mechanism</h3>
+          <p>Lamotrigine's main mechanism of action is the inhibition of voltage-sensitive sodium channels, which stabilizes neuronal membranes and inhibits the release of excitatory neurotransmitters, particularly glutamate and aspartate. This action is thought to be responsible for its anticonvulsant effects.</p>
+        </div>
+        
+        <div class="info-card">
+          <h3><i class="fas fa-sync-alt"></i> Secondary Mechanisms</h3>
+          <p>In addition to sodium channel blockade, lamotrigine has several other effects:</p>
+          <ul>
+            <li>Weak inhibition of dihydrofolate reductase</li>
+            <li>Inhibition of 5-HT3 receptors</li>
+            <li>Inhibition of voltage-sensitive calcium channels</li>
+            <li>Modulation of potassium channels</li>
+          </ul>
+          <p>These multiple actions may contribute to lamotrigine's broad spectrum of efficacy in different neurological and psychiatric conditions.</p>
+        </div>
+        
+        <div class="body-interactive">
+          <svg class="body-svg" viewBox="0 0 100 270" xmlns="http://www.w3.org/2000/svg">
+            <!-- Simplified human body outline -->
+            <circle cx="50" cy="30" r="20" fill="#e2e8f0" stroke="#a0aec0" stroke-width="1" class="body-part" data-tooltip="Brain: Lamotrigine modulates sodium channels and reduces glutamate release in the brain" />
+            <rect x="40" y="50" width="20" height="60" fill="#e2e8f0" stroke="#a0aec0" stroke-width="1" class="body-part" data-tooltip="Spine: May help with neuropathic pain by stabilizing neuronal membranes" />
+            <rect x="30" y="80" width="40" height="40" fill="#e2e8f0" stroke="#a0aec0" stroke-width="1" class="body-part" data-tooltip="Chest: Metabolized in the liver, excreted primarily by kidneys" />
+            <rect x="20" y="120" width="60" height="30" fill="#e2e8f0" stroke="#a0aec0" stroke-width="1" class="body-part" data-tooltip="Abdomen: Can cause gastrointestinal side effects like nausea in some patients" />
+            <rect x="30" y="150" width="15" height="70" fill="#e2e8f0" stroke="#a0aec0" stroke-width="1" class="body-part" data-tooltip="Legs: Skin rash (especially on extremities) is a common side effect that requires monitoring" />
+            <rect x="55" y="150" width="15" height="70" fill="#e2e8f0" stroke="#a0aec0" stroke-width="1" class="body-part" data-tooltip="Legs: Skin rash (especially on extremities) is a common side effect that requires monitoring" />
+            <rect x="15" y="80" width="15" height="40" fill="#e2e8f0" stroke="#a0aec0" stroke-width="1" class="body-part" data-tooltip="Arms: May cause tremor or coordination issues as side effects" />
+            <rect x="70" y="80" width="15" height="40" fill="#e2e8f0" stroke="#a0aec0" stroke-width="1" class="body-part" data-tooltip="Arms: May cause tremor or coordination issues as side effects" />
+          </svg>
+          
+          <div id="body-tooltip" class="tooltip"></div>
+        </div>
+        
+        <div class="info-card">
+          <h3><i class="fas fa-flask"></i> Pharmacokinetics</h3>
+          <div class="accordion">
+            <div class="accordion-item">
+              <div class="accordion-header" data-accordion="absorption">
+                Absorption
+                <i class="fas fa-chevron-down"></i>
+              </div>
+              <div class="accordion-content" id="absorption-content">
+                <p>Lamotrigine is rapidly and completely absorbed from the gastrointestinal tract with minimal first-pass metabolism. Its bioavailability is approximately 98%. Peak plasma concentrations occur 1.4 to 4.8 hours after oral administration. Food does not significantly affect its absorption.</p>
+              </div>
+            </div>
+            
+            <div class="accordion-item">
+              <div class="accordion-header" data-accordion="distribution">
+                Distribution
+                <i class="fas fa-chevron-down"></i>
+              </div>
+              <div class="accordion-content" id="distribution-content">
+                <p>Lamotrigine is approximately 55% bound to plasma proteins. It has a volume of distribution of 0.9-1.3 L/kg and readily crosses the blood-brain barrier. It also crosses the placenta and is found in breast milk.</p>
+              </div>
+            </div>
+            
+            <div class="accordion-item">
+              <div class="accordion-header" data-accordion="metabolism">
+                Metabolism
+                <i class="fas fa-chevron-down"></i>
+              </div>
+              <div class="accordion-content" id="metabolism-content">
+                <p>Lamotrigine is primarily metabolized by glucuronic acid conjugation in the liver, with UGT1A4 being the main enzyme involved. The major metabolite is the inactive 2-N-glucuronide.</p>
+              </div>
+            </div>
+            
+            <div class="accordion-item">
+              <div class="accordion-header" data-accordion="elimination">
+                Elimination
+                <i class="fas fa-chevron-down"></i>
+              </div>
+              <div class="accordion-content" id="elimination-content">
+                <p>The elimination half-life of lamotrigine ranges from 24 to 35 hours in adults on monotherapy. About 94% of the drug is excreted in urine, primarily as glucuronide conjugates. Less than 10% is excreted unchanged in urine.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div id="uses" class="tab-pane">
+        <h2 class="section-title">Clinical Uses</h2>
+        <div class="info-card">
+          <h3><i class="fas fa-check-circle"></i> FDA-Approved Indications</h3>
+          <ul>
+            <li><strong>Epilepsy:</strong> Adjunctive treatment or monotherapy for partial seizures, primary generalized tonic-clonic seizures, and generalized seizures of Lennox-Gastaut syndrome in patients ≥2 years old.</li>
+            <li><strong>Bipolar Disorder:</strong> Maintenance treatment of bipolar I disorder to delay the time to occurrence of mood episodes in patients treated for acute mood episodes with standard therapy.</li>
+          </ul>
+        </div>
+        
+        <div class="info-card">
+          <h3><i class="fas fa-flask"></i> Off-Label Uses</h3>
+          <ul>
+            <li><strong>Neuropathic Pain:</strong> May provide relief for trigeminal neuralgia, diabetic neuropathy, and other neuropathic pain syndromes.</li>
+            <li><strong>Depression:</strong> Used as an adjunct to antidepressants in treatment-resistant depression.</li>
+            <li><strong>PTSD:</strong> Some evidence suggests efficacy in reducing symptoms of post-traumatic stress disorder.</li>
+            <li><strong>Borderline Personality Disorder:</strong> May help with mood instability and impulsivity.</li>
+            <li><strong>Migraine Prevention:</strong> Can reduce frequency and severity of migraine headaches in some patients.</li>
+          </ul>
+        </div>
+        
+        <div class="interactive-chart" style="height: 300px;">
+          <h3 class="chart-title">Efficacy Comparison in Different Conditions</h3>
+          <canvas id="efficacyChart"></canvas>
+        </div>
+        
+        <div class="info-card">
+          <h3><i class="fas fa-user-md"></i> Special Populations</h3>
+          <div class="accordion">
+            <div class="accordion-item">
+              <div class="accordion-header" data-accordion="pediatric">
+                Pediatric Patients
+                <i class="fas fa-chevron-down"></i>
+              </div>
+              <div class="accordion-content" id="pediatric-content">
+                <p>Lamotrigine is approved for epilepsy in children ≥2 years of age. However, it's important to note that children have a higher risk of developing serious rashes, including Stevens-Johnson syndrome. Dosing in pediatric patients must be carefully calculated based on weight and concomitant medications.</p>
+              </div>
+            </div>
+            
+            <div class="accordion-item">
+              <div class="accordion-header" data-accordion="elderly">
+                Elderly Patients
+                <i class="fas fa-chevron-down"></i>
+              </div>
+              <div class="accordion-content" id="elderly-content">
+                <p>Clearance of lamotrigine decreases with age. Elderly patients may require lower doses and should be monitored closely for side effects. Attention should be paid to potential drug interactions, as elderly patients often take multiple medications.</p>
+              </div>
+            </div>
+            
+            <div class="accordion-item">
+              <div class="accordion-header" data-accordion="pregnancy">
+                Pregnancy and Lactation
+                <i class="fas fa-chevron-down"></i>
+              </div>
+              <div class="accordion-content" id="pregnancy-content">
+                <p>Lamotrigine crosses the placenta and is classified as FDA Pregnancy Category C. There is a registry for women exposed to lamotrigine during pregnancy. Current data suggest a possible small increased risk of oral clefts, but lamotrigine is generally considered to have a more favorable risk profile compared to valproate. Lamotrigine levels may decrease during pregnancy, potentially requiring dose adjustments. The drug is excreted in breast milk, but breastfeeding is generally considered compatible with lamotrigine use.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div id="dosing" class="tab-pane">
+        <h2 class="section-title">Dosing Information</h2>
+        <div class="info-card">
+          <h3><i class="fas fa-pills"></i> General Dosing Principles</h3>
+          <p>Lamotrigine requires careful titration to minimize the risk of severe rash. The initial dose and titration schedule depend on the indication and concomitant medications, particularly enzyme-inducing antiepileptic drugs or valproate.</p>
+        </div>
+        
+        <div class="table-container">
+          <table>
+            <thead>
+              <tr>
+                <th>Indication</th>
+                <th>Initial Dose</th>
+                <th>Typical Maintenance Dose</th>
+                <th>Maximum Dose</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Epilepsy (monotherapy)</td>
+                <td>25 mg daily for 2 weeks, then 50 mg daily for 2 weeks</td>
+                <td>100-200 mg daily in 1-2 divided doses</td>
+                <td>500 mg/day</td>
+              </tr>
+              <tr>
+                <td>Epilepsy (with enzyme inducers)</td>
+                <td>50 mg daily for 2 weeks, then 100 mg daily in 2 divided doses for 2 weeks</td>
+                <td>300-500 mg daily in 2 divided doses</td>
+                <td>700 mg/day</td>
+              </tr>
+              <tr>
+                <td>Epilepsy (with valproate)</td>
+                <td>25 mg every other day for 2 weeks, then 25 mg daily for 2 weeks</td>
+                <td>100-200 mg daily</td>
+                <td>200 mg/day</td>
+              </tr>
+              <tr>
+                <td>Bipolar Disorder</td>
+                <td>25 mg daily for 2 weeks, then 50 mg daily for 2 weeks</td>
+                <td>200 mg daily</td>
+                <td>400 mg/day</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        
+        <div class="interactive-chart" style="height: 300px;">
+          <h3 class="chart-title">Dosage Comparison Across Indications</h3>
+          <canvas id="dosageComparisonChart"></canvas>
+        </div>
+        
+        <div class="dosage-calculator">
+          <h3 class="calculator-title">Interactive Dosage Calculator</h3>
+          <p style="text-align: center; margin-bottom: 1.5rem;">Use this tool to estimate appropriate dosing based on patient factors</p>
+          
+          <div class="calculator-form">
+            <div>
+              <div class="form-group">
+                <label for="weight">Weight (kg):</label>
+                <input type="number" id="weight" name="weight" value="70" min="1" max="200">
+              </div>
+              
+              <div class="form-group">
+                <label for="indication">Indication:</label>
+                <select id="indication" name="indication">
+                  <option value="epilepsy">Epilepsy</option>
+                  <option value="bipolar">Bipolar Disorder</option>
+                  <option value="neuropathic">Neuropathic Pain</option>
+                </select>
+              </div>
+            </div>
+            
+            <div>
+              <div class="form-group">
+                <label for="age">Age Group:</label>
+                <select id="age" name="age">
+                  <option value="adult">Adult (18-65)</option>
+                  <option value="pediatric">Pediatric (2-17)</option>
+                  <option value="elderly">Elderly (>65)</option>
+                </select>
+              </div>
+              
+              <div class="form-group">
+                <label for="renalFunction">Renal Function:</label>
+                <select id="renalFunction" name="renalFunction">
+                  <option value="normal">Normal</option>
+                  <option value="impaired">Impaired</option>
+                </select>
+              </div>
+            </div>
+          </div>
+          
+          <button id="calculate-dosage" class="btn-primary">
+            Calculate Dosage
+          </button>
+          
+          <div id="calculator-result" class="calculator-result">
+            <h4 style="margin-bottom: 1rem; color: var(--primary);">Recommended Dosage</h4>
+            <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem;">
+              <div>
+                <p style="font-weight: bold;">Initial Dose</p>
+                <p id="initial-dose">25 mg/day</p>
+              </div>
+              <div>
+                <p style="font-weight: bold;">Target Dose</p>
+                <p id="target-dose">200-400 mg/day</p>
+              </div>
+              <div>
+                <p style="font-weight: bold;">Maximum Dose</p>
+                <p id="max-dose">500 mg/day</p>
+              </div>
+            </div>
+            <p style="margin-top: 1rem; font-style: italic; font-size: 0.9rem;">Note: Always titrate slowly according to package insert guidelines. This is an estimate only.</p>
+          </div>
+        </div>
+        
+        <div class="info-card">
+          <h3><i class="fas fa-exclamation-circle"></i> Important Dosing Considerations</h3>
+          <ul>
+            <li>Slow titration is essential to reduce the risk of serious rash</li>
+            <li>Valproate significantly inhibits lamotrigine metabolism, requiring dose reduction</li>
+            <li>Enzyme-inducing drugs (carbamazepine, phenytoin, phenobarbital, primidone) increase lamotrigine clearance, requiring higher doses</li>
+            <li>Doses should be adjusted according to clinical response and serum levels</li>
+            <li>When discontinuing, gradual tapering over at least 2 weeks is recommended to minimize seizure risk</li>
+          </ul>
+        </div>
+      </div>
+      
+      <div id="sideEffects" class="tab-pane">
+        <h2 class="section-title">Side Effects & Adverse Reactions</h2>
+        <div class="info-card">
+          <h3><i class="fas fa-exclamation-triangle"></i> Common Side Effects</h3>
+          <p>These side effects are relatively common and often mild to moderate in severity:</p>
+          
+          <div class="side-effect-list">
+            <div class="side-effect-item">
+              <div class="severity-indicator severity-low"></div>
+              <span>Headache (29%)</span>
+            </div>
+            <div class="side-effect-item">
+              <div class="severity-indicator severity-low"></div>
+              <span>Dizziness (22%)</span>
+            </div>
+            <div class="side-effect-item">
+              <div class="severity-indicator severity-low"></div>
+              <span>Nausea (19%)</span>
+            </div>
+            <div class="side-effect-item">
+              <div class="severity-indicator severity-low"></div>
+              <span>Double Vision (12%)</span>
+            </div>
+            <div class="side-effect-item">
+              <div class="severity-indicator severity-low"></div>
+              <span>Ataxia (10%)</span>
+            </div>
+            <div class="side-effect-item">
+              <div class="severity-indicator severity-low"></div>
+              <span>Tremor (8%)</span>
+            </div>
+            <div class="side-effect-item">
+              <div class="severity-indicator severity-low"></div>
+              <span>Somnolence (7%)</span>
+            </div>
+            <div class="side-effect-item">
+              <div class="severity-indicator severity-low"></div>
+              <span>Insomnia (6%)</span>
+            </div>
+          </div>
+        </div>
+        
+        <div class="interactive-chart" style="height: 300px;">
+          <h3 class="chart-title">Common Side Effects Frequency</h3>
+          <canvas id="sideEffectsChart"></canvas>
+        </div>
+        
+        <div class="info-card">
+          <h3><i class="fas fa-skull"></i> Serious Adverse Reactions</h3>
+          
+          <div class="side-effect-list">
+            <div class="side-effect-item">
+              <div class="severity-indicator severity-high"></div>
+              <span>Serious Rash (0.3-1%)</span>
+            </div>
+            <div class="side-effect-item">
+              <div class="severity-indicator severity-high"></div>
+              <span>Stevens-Johnson Syndrome (0.1%)</span>
+            </div>
+            <div class="side-effect-item">
+              <div class="severity-indicator severity-high"></div>
+              <span>Toxic Epidermal Necrolysis (rare)</span>
+            </div>
+            <div class="side-effect-item">
+              <div class="severity-indicator severity-high"></div>
+              <span>Drug-induced Hypersensitivity Syndrome (rare)</span>
+            </div>
+            <div class="side-effect-item">
+              <div class="severity-indicator severity-medium"></div>
+              <span>Suicidal Ideation (0.43%)</span>
+            </div>
+            <div class="side-effect-item">
+              <div class="severity-indicator severity-medium"></div>
+              <span>Aseptic Meningitis (rare)</span>
+            </div>
+            <div class="side-effect-item">
+              <div class="severity-indicator severity-medium"></div>
+              <span>Blood Dyscrasias (rare)</span>
+            </div>
+            <div class="side-effect-item">
+              <div class="severity-indicator severity-medium"></div>
+              <span>Hepatic Failure (rare)</span>
+            </div>
+          </div>
+          
+          <div class="accordion">
+            <div class="accordion-item">
+              <div class="accordion-header" data-accordion="rashDetails">
+                Rash - Critical Information
+                <i class="fas fa-chevron-down"></i>
+              </div>
+              <div class="accordion-content" id="rashDetails-content">
+                <p><strong>Risk factors for serious rash:</strong></p>
+                <ul>
+                  <li>Age under 13 years</li>
+                  <li>Rapid dose escalation</li>
+                  <li>Concomitant valproate use</li>
+                  <li>Exceeding recommended initial dose</li>
+                  <li>History of drug allergy or rash from other AEDs</li>
+                </ul>
+                <p><strong>Warning signs of serious rash:</strong></p>
+                <ul>
+                  <li>Fever</li>
+                  <li>Lymphadenopathy</li>
+                  <li>Facial swelling</li>
+                  <li>Mucosal involvement</li>
+                  <li>Blistering or peeling skin</li>
+                </ul>
+                <p>Lamotrigine should be discontinued at the first sign of rash unless the rash is clearly not drug-related.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="info-card">
+          <h3><i class="fas fa-stethoscope"></i> Monitoring Recommendations</h3>
+          <ul>
+            <li><strong>Skin Examination:</strong> Regular monitoring for any signs of rash, especially during the first 8 weeks of treatment.</li>
+            <li><strong>Therapeutic Drug Monitoring:</strong> Serum levels may be useful in suspected toxicity, compliance issues, or when changing concomitant medications affecting lamotrigine metabolism.</li>
+            <li><strong>Psychiatric Symptoms:</strong> Monitor for signs of mood changes, depression, or suicidal thoughts.</li>
+            <li><strong>Liver Function Tests:</strong> Consider baseline and periodic LFTs, especially in patients with pre-existing liver disease.</li>
+            <li><strong>Complete Blood Count:</strong> Consider baseline and periodic monitoring, especially in patients with symptoms suggesting blood dyscrasias.</li>
+          </ul>
+        </div>
+      </div>
+      
+      <div id="interactions" class="tab-pane">
+        <h2 class="section-title">Drug Interactions</h2>
+        <div class="info-card">
+          <h3><i class="fas fa-exchange-alt"></i> Pharmacokinetic Interactions</h3>
+          <p>Lamotrigine is primarily metabolized by glucuronidation, and its clearance can be significantly affected by drugs that induce or inhibit this pathway.</p>
+          
+          <div class="table-container">
+            <table>
+              <thead>
+                <tr>
+                  <th>Interacting Drug</th>
+                  <th>Effect on Lamotrigine</th>
+                  <th>Clinical Significance</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Valproic Acid</td>
+                  <td>↑ Lamotrigine levels (inhibits glucuronidation)</td>
+                  <td>Major - Lamotrigine dose should be reduced by ~50%; increases risk of rash</td>
+                </tr>
+                <tr>
+                  <td>Carbamazepine, Phenytoin, Phenobarbital, Primidone</td>
+                  <td>↓ Lamotrigine levels (induce glucuronidation)</td>
+                  <td>Major - Lamotrigine dose may need to be increased by ~100%</td>
+                </tr>
+                <tr>
+                  <td>Oral Contraceptives</td>
+                  <td>↓ Lamotrigine levels (induce glucuronidation)</td>
+                  <td>Moderate - Monitor for decreased efficacy during pill-taking days</td>
+                </tr>
+                <tr>
+                  <td>Rifampin</td>
+                  <td>↓ Lamotrigine levels (induces glucuronidation)</td>
+                  <td>Moderate - May need dose adjustment</td>
+                </tr>
+                <tr>
+                  <td>Atazanavir/Ritonavir</td>
+                  <td>↓ Lamotrigine levels</td>
+                  <td>Moderate - May need dose adjustment</td>
+                </tr>
+                <tr>
+                  <td>Folate Supplements</td>
+                  <td>Possible ↓ Lamotrigine levels</td>
+                  <td>Minor - Clinical significance uncertain</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        
+        <div class="info-card">
+          <h3><i class="fas fa-handshake"></i> Pharmacodynamic Interactions</h3>
+          <ul>
+            <li><strong>CNS Depressants:</strong> May enhance the CNS depressant effect of lamotrigine (e.g., alcohol, benzodiazepines, opioids).</li>
+            <li><strong>Other Sodium Channel Blockers:</strong> Potential additive effects with other drugs that block sodium channels (e.g., local anesthetics, class I antiarrhythmics).</li>
+            <li><strong>QT-prolonging Drugs:</strong> Caution when combining with other drugs that prolong QT interval, although lamotrigine itself has minimal effect on QT interval.</li>
+          </ul>
+        </div>
+        
+        <div class="info-card">
+          <h3><i class="fas fa-mortar-pestle"></i> Herbal/Supplement Interactions</h3>
+          <div class="accordion">
+            <div class="accordion-item">
+              <div class="accordion-header" data-accordion="stjohns">
+                St. John's Wort
+                <i class="fas fa-chevron-down"></i>
+              </div>
+              <div class="accordion-content" id="stjohns-content">
+                <p>St. John's Wort induces hepatic enzymes and may decrease lamotrigine levels. Patients should be advised to avoid this combination or to maintain consistent use and inform their healthcare provider.</p>
+              </div>
+            </div>
+            
+            <div class="accordion-item">
+              <div class="accordion-header" data-accordion="melatonin">
+                Melatonin
+                <i class="fas fa-chevron-down"></i>
+              </div>
+              <div class="accordion-content" id="melatonin-content">
+                <p>Potential additive CNS depressant effects. Monitor for increased sedation.</p>
+              </div>
+            </div>
+            
+            <div class="accordion-item">
+              <div class="accordion-header" data-accordion="folicAcid">
+                Folic Acid
+                <i class="fas fa-chevron-down"></i>
+              </div>
+              <div class="accordion-content" id="folicAcid-content">
+                <p>There is some evidence suggesting that folic acid supplementation might decrease lamotrigine levels, possibly by increasing its metabolism. The clinical significance is uncertain, but monitoring may be prudent when starting or stopping folate supplements.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="info-card">
+          <h3><i class="fas fa-utensils"></i> Food Interactions</h3>
+          <p>Lamotrigine does not have significant interactions with food. It can be taken with or without food, as food does not significantly affect its absorption. However, maintaining consistency in relation to meals may help maintain stable drug levels.</p>
+        </div>
+        
+        <div class="quiz-container">
+          <h3 class="quiz-title">Test Your Knowledge: Drug Interactions</h3>
+          <div class="quiz-question">
+            Which medication significantly increases lamotrigine levels, potentially requiring a dose reduction?
+          </div>
+          <div class="quiz-options">
+            <div class="quiz-option" data-answer="a">
+              Valproic Acid
+            </div>
+            <div class="quiz-option" data-answer="b">
+              Carbamazepine
+            </div>
+            <div class="quiz-option" data-answer="c">
+              Oral Contraceptives
+            </div>
+            <div class="quiz-option" data-answer="d">
+              Rifampin
+            </div>
+          </div>
+          
+          <button id="interactions-quiz-check" class="btn-primary">
+            Check Answer
+          </button>
+          
+          <div id="interactions-quiz-result" class="quiz-result"></div>
+        </div>
+      </div>
+    </div>
+    
+    <footer class="footer">
+      <div class="footer-content">
+        <p>Interactive Educational Resource on Lamotrigine</p>
+        <div class="disclaimer">
+          <p>Disclaimer: This resource is for educational purposes only and should not replace professional medical advice. Always consult a healthcare provider before starting, stopping, or changing medication regimens.</p>
+        </div>
+        <div class="references">
+          <h4>References</h4>
+          <ol>
+            <li>Lamotrigine. In: Lexi-drugs online [database on the Internet]. Hudson (OH): Lexicomp, Inc.; 2023 [updated 2023 Jan 24; cited 2023 Apr 15].</li>
+            <li>Muzina DJ, et al. Maintenance treatment in bipolar disorder: a focus on lamotrigine. Expert Opin Pharmacother. 2005;6(10):1615-1625.</li>
+            <li>Wiffen PJ, et al. Lamotrigine for chronic neuropathic pain and fibromyalgia in adults. Cochrane Database Syst Rev. 2013;12:CD006044.</li>
+            <li>Goldsmith DR, et al. Lamotrigine: a review of its use in bipolar disorder. Drugs. 2003;63(19):2029-2050.</li>
+            <li>Hiba A, et al. Lamotrigine: a comprehensive review of its pharmacology and clinical applications. Front Neurol. 2021;12:721183.</li>
+          </ol>
+        </div>
+      </div>
+    </footer>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      // Tab navigation
+      const tabLinks = document.querySelectorAll('.nav-tab');
+      const tabContents = document.querySelectorAll('.tab-pane');
+      
+      tabLinks.forEach(tabLink => {
+        tabLink.addEventListener('click', function() {
+          // Remove active class from all tabs
+          tabLinks.forEach(link => link.classList.remove('active'));
+          tabContents.forEach(content => content.classList.remove('active'));
+          
+          // Add active class to clicked tab
+          this.classList.add('active');
+          const tabId = this.getAttribute('data-tab');
+          document.getElementById(tabId).classList.add('active');
+          
+          // Initialize charts when specific tabs are opened
+          if (tabId === 'sideEffects') {
+            initSideEffectsChart();
+          } else if (tabId === 'dosing') {
+            initDosageComparisonChart();
+          } else if (tabId === 'uses') {
+            initEfficacyChart();
+          }
+        });
+      });
+      
+      // Accordion functionality
+      const accordionHeaders = document.querySelectorAll('.accordion-header');
+      
+      accordionHeaders.forEach(header => {
+        header.addEventListener('click', function() {
+          const accordionId = this.getAttribute('data-accordion');
+          const content = document.getElementById(accordionId + '-content');
+          
+          // Toggle open class
+          content.classList.toggle('open');
+          
+          // Change icon
+          const icon = this.querySelector('i');
+          if (content.classList.contains('open')) {
+            icon.classList.replace('fa-chevron-down', 'fa-chevron-up');
+          } else {
+            icon.classList.replace('fa-chevron-up', 'fa-chevron-down');
+          }
+        });
+      });
+      
+      // Body part tooltips
+      const bodyParts = document.querySelectorAll('.body-part');
+      const tooltip = document.getElementById('body-tooltip');
+      
+      bodyParts.forEach(part => {
+        part.addEventListener('mouseenter', function(e) {
+          const rect = this.getBoundingClientRect();
+          const tooltipText = this.getAttribute('data-tooltip');
+          
+          tooltip.textContent = tooltipText;
+          tooltip.style.top = (rect.top - 10) + 'px';
+          tooltip.style.left = (rect.left + rect.width / 2) + 'px';
+          tooltip.style.transform = 'translate(-50%, -100%)';
+          tooltip.style.opacity = '1';
+          tooltip.style.visibility = 'visible';
+        });
+        
+        part.addEventListener('mouseleave', function() {
+          tooltip.style.opacity = '0';
+          tooltip.style.visibility = 'hidden';
+        });
+      });
+      
+      // Quiz functionality
+      const quizOptions = document.querySelectorAll('.quiz-option');
+      let selectedAnswer = {};
+      
+      quizOptions.forEach(option => {
+        option.addEventListener('click', function() {
+          const quizContainer = this.closest('.quiz-container');
+          if (!quizContainer.classList.contains('submitted')) {
+            // Remove selected class from siblings
+            const siblings = this.parentElement.querySelectorAll('.quiz-option');
+            siblings.forEach(sib => sib.classList.remove('selected'));
+            
+            // Add selected class to this option
+            this.classList.add('selected');
+            
+            // Store the selected answer
+            const quizId = quizContainer.id || this.closest('.tab-pane').id;
+            selectedAnswer[quizId] = this.getAttribute('data-answer');
+          }
+        });
+      });
+      
+      // Overview quiz check
+      document.getElementById('overview-quiz-check').addEventListener('click', function() {
+        const resultElement = document.getElementById('overview-quiz-result');
+        const quizContainer = this.closest('.quiz-container');
+        const selectedOption = quizContainer.querySelector('.quiz-option.selected');
+        
+        if (!selectedOption) {
+          resultElement.textContent = 'Please select an answer first.';
+          resultElement.style.display = 'block';
+          resultElement.style.color = 'var(--warning)';
+          return;
+        }
+        
+        quizContainer.classList.add('submitted');
+        const answer = selectedOption.getAttribute('data-answer');
+        
+        if (answer === 'b') {
+          resultElement.textContent = 'Correct! Lamotrigine belongs to the phenyltriazine class.';
+          resultElement.style.color = 'var(--success)';
+          selectedOption.classList.add('correct');
+        } else {
+          resultElement.textContent = 'Incorrect. Lamotrigine belongs to the phenyltriazine class.';
+          resultElement.style.color = 'var(--danger)';
+          selectedOption.classList.add('incorrect');
+          
+          // Highlight the correct answer
+          quizContainer.querySelector('.quiz-option[data-answer="b"]').classList.add('correct');
+        }
+        
+        resultElement.style.display = 'block';
+        this.style.display = 'none';
+      });
+      
+      // Interactions quiz check
+      document.getElementById('interactions-quiz-check').addEventListener('click', function() {
+        const resultElement = document.getElementById('interactions-quiz-result');
+        const quizContainer = this.closest('.quiz-container');
+        const selectedOption = quizContainer.querySelector('.quiz-option.selected');
+        
+        if (!selectedOption) {
+          resultElement.textContent = 'Please select an answer first.';
+          resultElement.style.display = 'block';
+          resultElement.style.color = 'var(--warning)';
+          return;
+        }
+        
+        quizContainer.classList.add('submitted');
+        const answer = selectedOption.getAttribute('data-answer');
+        
+        if (answer === 'a') {
+          resultElement.textContent = 'Correct! Valproic acid inhibits the glucuronidation of lamotrigine, increasing its levels by approximately 2-fold.';
+          resultElement.style.color = 'var(--success)';
+          selectedOption.classList.add('correct');
+        } else {
+          resultElement.textContent = 'Incorrect. Valproic acid inhibits the glucuronidation of lamotrigine, increasing its levels by approximately 2-fold.';
+          resultElement.style.color = 'var(--danger)';
+          selectedOption.classList.add('incorrect');
+          
+          // Highlight the correct answer
+          quizContainer.querySelector('.quiz-option[data-answer="a"]').classList.add('correct');
+        }
+        
+        resultElement.style.display = 'block';
+        this.style.display = 'none';
+      });
+      
+      // Dosage calculator
+      document.getElementById('calculate-dosage').addEventListener('click', function() {
+        const weight = parseFloat(document.getElementById('weight').value);
+        const indication = document.getElementById('indication').value;
+        const age = document.getElementById('age').value;
+        const renalFunction = document.getElementById('renalFunction').value;
+        
+        let dosage = { initial: 0, target: '0', maxDaily: 0 };
+        
+        if (age === 'adult') {
+          if (indication === 'epilepsy') {
+            dosage.initial = 25;
+            dosage.target = "200-400";
+            dosage.maxDaily = 500;
+          } else if (indication === 'bipolar') {
+            dosage.initial = 25;
+            dosage.target = "100-200";
+            dosage.maxDaily = 400;
+          } else if (indication === 'neuropathic') {
+            dosage.initial = 25;
+            dosage.target = "100-200";
+            dosage.maxDaily = 300;
+          }
+        } else if (age === 'pediatric') {
+          // Adjust for pediatric weight
+          if (indication === 'epilepsy') {
+            dosage.initial = Math.round(weight * 0.3);
+            dosage.target = `${Math.round(weight * 1)}-${Math.round(weight * 5)}`;
+            dosage.maxDaily = Math.min(Math.round(weight * 8), 300);
+          }
+        } else if (age === 'elderly') {
+          // Reduced dosing for elderly
+          if (indication === 'epilepsy') {
+            dosage.initial = 25;
+            dosage.target = "100-200";
+            dosage.maxDaily = 300;
+          } else if (indication === 'bipolar') {
+            dosage.initial = 25;
+            dosage.target = "100-150";
+            dosage.maxDaily = 200;
+          } else if (indication === 'neuropathic') {
+            dosage.initial = 25;
+            dosage.target = "75-150";
+            dosage.maxDaily = 200;
+          }
+        }
+        
+        // Adjust for renal impairment
+        if (renalFunction === 'impaired') {
+          dosage.initial = Math.round(dosage.initial * 0.75);
+          dosage.maxDaily = Math.round(dosage.maxDaily * 0.75);
+        }
+        
+        // Update result display
+        document.getElementById('initial-dose').textContent = dosage.initial + " mg/day";
+        document.getElementById('target-dose').textContent = dosage.target + " mg/day";
+        document.getElementById('max-dose').textContent = dosage.maxDaily + " mg/day";
+        
+        document.getElementById('calculator-result').style.display = 'block';
+      });
+      
+      // Chart initializations
+      function initSideEffectsChart() {
+        const ctx = document.getElementById('sideEffectsChart');
+        if (ctx && !ctx.chart) {
+          ctx.chart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+              labels: ['Rash', 'Headache', 'Dizziness', 'Nausea', 'Double Vision', 'Tremor'],
+              datasets: [{
+                label: 'Percentage of Patients (%)',
+                data: [10, 29, 22, 19, 12, 8],
+                backgroundColor: [
+                  'rgba(239, 71, 111, 0.7)',
+                  'rgba(255, 209, 102, 0.7)',
+                  'rgba(6, 214, 160, 0.7)',
+                  'rgba(17, 138, 178, 0.7)',
+                  'rgba(131, 56, 236, 0.7)',
+                  'rgba(58, 134, 255, 0.7)'
+                ],
+                borderColor: [
+                  'rgba(239, 71, 111, 1)',
+                  'rgba(255, 209, 102, 1)',
+                  'rgba(6, 214, 160, 1)',
+                  'rgba(17, 138, 178, 1)',
+                  'rgba(131, 56, 236, 1)',
+                  'rgba(58, 134, 255, 1)'
+                ],
+                borderWidth: 1
+              }]
+            },
+            options: {
+              scales: {
+                y: {
+                  beginAtZero: true,
+                  max: 35
+                }
+              },
+              plugins: {
+                legend: {
+                  display: false
+                },
+                tooltip: {
+                  callbacks: {
+                    label: function(context) {
+                      return `${context.parsed.y}% of patients`;
+                    }
+                  }
+                }
+              },
+              responsive: true,
+              maintainAspectRatio: false
+            }
+          });
+        }
+      }
+      
+      function initDosageComparisonChart() {
+        const ctx = document.getElementById('dosageComparisonChart');
+        if (ctx && !ctx.chart) {
+          ctx.chart = new Chart(ctx, {
+            type: 'radar',
+            data: {
+              labels: ['Epilepsy', 'Bipolar Disorder', 'Neuropathic Pain', 'Off-label Depression'],
+              datasets: [{
+                label: 'Average Daily Dose (mg)',
+                data: [300, 200, 200, 150],
+                backgroundColor: 'rgba(58, 134, 255, 0.2)',
+                borderColor: 'rgba(58, 134, 255, 1)',
+                pointBackgroundColor: 'rgba(58, 134, 255, 1)',
+                pointHoverBackgroundColor: '#fff',
+                pointHoverBorderColor: 'rgba(58, 134, 255, 1)'
+              }]
+            },
+            options: {
+              elements: {
+                line: {
+                  borderWidth: 3
+                }
+              },
+              scales: {
+                r: {
+                  angleLines: {
+                    display: true
+                  },
+                  suggestedMin: 0,
+                  suggestedMax: 400
+                }
+              },
+              responsive: true,
+              maintainAspectRatio: false
+            }
+          });
+        }
+      }
+      
+      function initEfficacyChart() {
+        const ctx = document.getElementById('efficacyChart');
+        if (ctx && !ctx.chart) {
+          ctx.chart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+              labels: ['Epilepsy', 'Bipolar Maintenance', 'Neuropathic Pain', 'Depression (adjunct)', 'Migraine Prevention'],
+              datasets: [{
+                label: 'Evidence Strength',
+                data: [9.5, 8.2, 6.3, 5.5, 4.8],
+                backgroundColor: [
+                  'rgba(58, 134, 255, 0.7)',
+                  'rgba(58, 134, 255, 0.6)',
+                  'rgba(58, 134, 255, 0.5)',
+                  'rgba(58, 134, 255, 0.4)',
+                  'rgba(58, 134, 255, 0.3)'
+                ],
+                borderColor: [
+                  'rgba(58, 134, 255, 1)',
+                  'rgba(58, 134, 255, 1)',
+                  'rgba(58, 134, 255, 1)',
+                  'rgba(58, 134, 255, 1)',
+                  'rgba(58, 134, 255, 1)'
+                ],
+                borderWidth: 1
+              }]
+            },
+            options: {
+              scales: {
+                y: {
+                  beginAtZero: true,
+                  max: 10,
+                  title: {
+                    display: true,
+                    text: 'Evidence Strength (0-10 scale)'
+                  }
+                }
+              },
+              indexAxis: 'y',
+              plugins: {
+                legend: {
+                  display: false
+                }
+              },
+              responsive: true,
+              maintainAspectRatio: false
+            }
+          });
+        }
+      }
+      
+      // Initialize the overview tab charts on page load
+      initEfficacyChart();
+    });
+  </script>
+</body>
+</html>
